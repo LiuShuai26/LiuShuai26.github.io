@@ -1,8 +1,8 @@
 # Site settings
-title: Hux Blog
+title: LiuShuai Blog
 SEOTitle: 刘帅的博客 | LiuShuai Blog
 header-img: img/home-bg.jpg
-email: huxpro@gmail.com
+email: liustark@hotmail.com
 description: "这里是刘帅的博客"
 keyword: ""
 url: "https://liushuai26.github.io"              # your host, for absolute URL
@@ -70,7 +70,7 @@ ga_domain:
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "???????????"
+sidebar-about-description: "每个人都是一座孤岛"
 sidebar-avatar: /img/author.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
@@ -90,37 +90,7 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "Su",
-        href: "http://su.gallery/"
-    },{
-        title: "乱序",
-        href: "http://mida.re/"
-    },{
-        title: "前端外刊评论",
-        href: "http://qianduan.guru/"
-    },{
-        title: "天镶的博客",
-        href: "http://lingyu.wang/"
-    },{
-        title: "Luke 的自留地",
-        href: "http://hmqk1995.github.io"
-    },{
-        title: "Ebn's Blog",
-        href: "http://ebnbin.com/"
-    },{
-        title: "SmdCn's Blog",
-        href: "http://blog.smdcn.net"
-    },{
-        title: "解旻的博客",
-        href: "http://xieminis.me/"
-    },{
-        title: "DHong Say",
-        href: "http://dhong.co"
-    },{
-        title: "尹峰以为",
-        href: "http://ingf.github.io/"
-    },{
-        title: "前端神盾局",
-        href: "http://wepiaofei.github.io/blog/"
+        title: "Hux Blog",
+        href: "https://huangxuan.me/"
     }
 ]
