@@ -1,6 +1,6 @@
 # Site settings
-title: LiuShuai Blog
-SEOTitle: 刘帅的博客 | LiuShuai Blog
+title: Shuai's Blog
+SEOTitle: 刘帅的博客 | Shuai's Blog
 header-img: img/home-bg.jpg
 email: liustark@hotmail.com
 description: "这里是刘帅的博客"
@@ -16,7 +16,7 @@ weibo_username:     /u/5081937391
 #zhihu_username:     
 github_username:    liushuai26
 #twitter_username:  huxpro
-#facebook_username:  huxpro
+facebook_username:  Shuai Liu
 # linkedin_username:  firstname-lastname-idxxxx
 
 
