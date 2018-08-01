@@ -3,7 +3,7 @@ layout:     post
 title:      "为什么我不再晚睡晚起"
 subtitle:   ""
 date:       2017-07-08 15:00:00
-author:     "LiuShuai"
+author:     "Shuai Liu"
 catalog: true
 tags:
     - life
