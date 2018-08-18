@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "看到世界的真相"
+title:      "为什么要独立思考"
 subtitle:   ""
 date:       2018-08-31 23:00:00
 author:     "Shuai Liu"
@@ -9,7 +9,7 @@ tags:
     - life
 ---
 
-大二时形势与政策课的结课论文
+大一形势与政策课 结课论文
 
 
 
