@@ -22,8 +22,7 @@ title: Shuai's Blog
 author: Shuai Liu
 # email: my-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Here is my blog. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  Here is my blog. Hope it will give you a little help.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: notwitter
