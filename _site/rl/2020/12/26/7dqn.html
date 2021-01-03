@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>DQN Algorithms | Shuai’s blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="DQN Algorithms" />
+<meta name="author" content="Shuai Liu" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="DQN and it’s improvement." />
+<meta property="og:description" content="DQN and it’s improvement." />
+<link rel="canonical" href="http://localhost:4000/rl/2020/12/26/7dqn.html" />
+<meta property="og:url" content="http://localhost:4000/rl/2020/12/26/7dqn.html" />
+<meta property="og:site_name" content="Shuai’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-26T01:20:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="DQN Algorithms" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Shuai Liu"},"url":"http://localhost:4000/rl/2020/12/26/7dqn.html","headline":"DQN Algorithms","dateModified":"2020-12-26T01:20:00+08:00","datePublished":"2020-12-26T01:20:00+08:00","description":"DQN and it’s improvement.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/rl/2020/12/26/7dqn.html"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Shuai's blog" /></head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Shuai&#39;s blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">DQN Algorithms</h1>
+    <p class="post-meta">
+
+      <time datetime="2020-12-26T01:20:00+08:00" itemprop="datePublished">
+        
+        Dec 26, 2020
+      </time>
+
+      <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        by <span itemprop="name">Shuai Liu</span>
+      </span>
+
+      <span>
+        
+      </span>
+      <!--
+      <span class="share-buttons">
+        <span class="share-button"><a class="twitter-share-button" href="https://twitter.com/share" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+
+        <span class="share-button"><span class="fb-like" data-href="/rl/2020/12/26/7dqn.html" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></span></span>
+      </span>
+      <div style="clear: both;"/>
+      -->
+
+    </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <blockquote>
+  <p>DQN and it’s improvement.</p>
+</blockquote>
+
+<h2 id="dqn">DQN</h2>
+
+<p>Goal is maximizes future rewards.</p>
+
+<p>Define the future discounted return at time t as $R_t = \sum^T_{t’=t}\gamma^{t’-t}r_{t’}$. T is the time-step at which the games terminates. (Assume the future rewards are discounted by a factor of $\gamma$ per time-step.)</p>
+
+<p>Define the optimal action-value function $Q^*(s, a)$ as the maximum expected return. ($\cal E$ : Emulator)</p>
+
+\[Q^*(s, a) = \Bbb E_{s' \sim \cal E}[r+\gamma \underset {a'} \max Q^*(s', a')|s, a]\]
+
+<p>function approximator to estimate the action-value function $Q(s, a; \theta) \approx Q^*(s, a)$</p>
+
+<p>non-linear function approximator: neural network $Q(s, a; \theta) \approx Q^*(s, a)$</p>
+
+<p>Loss function $L_i(\theta_i)$</p>
+
+\[L_i(\theta_i) = \Bbb E_{s,a \sim \rho(\cdot)}[(y_i - Q(s, a;\theta_i))^2]\\
+y_i = \Bbb E_{s' \sim \cal E}[r + \gamma \underset {a'} \max Q(s', a'; \theta_{i-1})|s, a]\]
+
+<p>$y_i$ is the target.</p>
+
+\[\nabla_{\theta_i}L_i(\theta_i) = \Bbb E_{s,a \sim \rho(\cdot);s'\sim \cal E}[(r+\gamma \underset {a'} \max Q(s', a'; \theta_{i-1})-Q(s, a;\theta_i))\nabla_{\theta_i}Q(s, a;\theta_i)]\]
+
+<p>greedy strategy $a = \underset a \max Q(s, a; \theta)$ with probability $1 - \varepsilon $ and selects a random action with probability $\varepsilon$</p>
+
+<p>two mechanisms make it work:</p>
+
+<p><strong>Fixed Q-targets</strong>:</p>
+
+<ul>
+  <li>Using a separate network with a fixed parameter (let’s call it w-) for estimating the TD target.</li>
+  <li>At every $\tau$ step, we copy the parameters from our DQN network to update the target network.</li>
+</ul>
+
+<p><strong>Experience replay</strong>: making more efficient use of observed experience:</p>
+
+<ul>
+  <li>Avoid forgetting previous experiences.</li>
+  <li>Reduce correlations between experiences.</li>
+</ul>
+
+<hr />
+
+<h2 id="double-q-learning">Double Q-learning</h2>
+
+<p>Q-learning, it is known to sometimes learn unrealistically high action values because it includes a maximization step over estimated action values, which tends to prefer overestimated to underestimated values.</p>
+
+<p>Overoptimize due to estimation errors.</p>
+
+<p>The idea of Double Q-learning is to reduce overestimations by decomposing the max operation in the target into action selection and action evaluation. Although not fully decoupled, the target network in the DQN architecture provides a natural candidate for the second value function, without having to introduce additional networks. <strong>We therefore propose to evaluate the greedy policy according to the online network, but using the target network to estimate its value.</strong></p>
+
+<p>In reference to both Double Q-learning and DQN, we refer to the resulting algorithm as Double DQN.</p>
+
+\[Y_t^{DQN} = R_{t+1}+\gamma \underset a \max Q(S_{t+1}, a; \theta_t^-)\]
+
+<p>It’s update is the same as for DQN, but replacing the target $Y_t^{DQN}$ with</p>
+
+\[Y_t^{DDQN} = R_{t+1}+\gamma Q(S_{t+1}, \underset a {\arg\max}Q(S_{t+1}, a;\theta_t), \theta_t^-)\]
+
+<p>Why Double Q-learning work?</p>
+
+<p>Theorem 1 in the paper.</p>
+
+<hr />
+
+<h2 id="dueling-dqn">Dueling DQN</h2>
+
+<p>The key insight behind our new architecture is that for many states, it is unnecessary to estimate the value of each action choice.</p>
+
+<p>The proposed network architecture, which we name the dueling architecture, explicitly separates the representation of state values and (state-dependent) action advantages. The dueling architecture consists of two streams that represent the value and advantage functions, while sharing a common convolutional feature learning module. The two streams are combined via a special aggregating layer to produce an estimate of the state-action value function Q.</p>
+
+<p>From the expressions for advantage $Q^\pi(s, a) = V^\pi(s) + A^\pi(s, a)$ and state-value $V^\pi(s) = \Bbb E_{a \sim \pi(s)}[Q^\pi(s, a)]$, it follows that $\Bbb E_{a \sim \pi(s)}[A^\pi(s, a)] = 0$. Moreover, for a deterministic policy, $a^* = \arg\max_{a’\in\cal A}Q(s, a’)$, it follows that $Q(s, a^<em>)=V(s)$ and hence $A(s, a^</em>) = 0$.</p>
+
+<p>Using the deﬁnition of advantage, we might be tempted to construct the aggregating module as follows:</p>
+
+\[Q(s, a;\theta, \alpha, \beta) = V(s;\theta,\beta)+A(s,a;\theta,\alpha) \tag 7\]
+
+<p>$V(s;\theta,\beta)$ is a scalar and $A(s,a;\theta,\alpha)$ is a $|\cal A|$-dimensional vector.</p>
+
+<p>Equation above is unidentifiable in the sense that given Q we cannot recover  V and A uniquely.</p>
+
+<p>To address this issue of identifiability, we can force the advantage function estimator to have zero advantage at the chosen action.</p>
+
+\[Q(s,a;\theta,\alpha,\beta) = V(s;\theta,\beta)+ \left(A(s,a;\theta,\alpha)-\underset {a'\in|\cal A|} \max A(s,a';\theta,\alpha)\right) \tag 8\]
+
+<p>Now, for $a^<em>=\arg\max_{a’\in\cal A}Q(s,a’;\theta,\alpha,\beta) = \arg\max_{a’\in\cal A}A(s,a’;\theta,\alpha)$, we obtain $Q(s, a^</em>;\theta,\alpha, \beta)=V(s;\theta,\beta)$. Hence, the stream $V(s;\theta,\beta)$ provides an estimate of the value function, while the other stream produces an estimate of the advantage function.</p>
+
+<p>An alternative module replaces the max operator with an average:</p>
+
+\[Q(s,a;\theta,\alpha,\beta) = V(s;\theta,\beta)+ \left(A(s,a;\theta,\alpha)- \frac 1 {|\cal A|} \underset {a'} \sum A(s,a';\theta,\alpha)\right) \tag 9\]
+
+<p>On the one hand this loses the original semantics of V and A because they are now off-target by a constant, but on the other hand it increases the stability of the optimization: with (9) the advantages only need to change as fast as the mean, instead of having to compensate any change to the optimal action’s advantage in (8).</p>
+
+<p>The advantage of the dueling architecture lies partly in its ability to learn the state-value function efﬁciently. With every update of the Q values in the dueling architecture, the value stream V is updated – this contrasts with the updates in a single-stream architecture where only the value for one of the actions is updated, the values for all other actions remain untouched. This more frequent updating of the value stream in our approach allocates more resources to V , and thus allows for better approximation of the state values, which in turn need to be accurate for temporal difference-based methods like Q-learning to work.</p>
+
+<hr />
+
+<h2 id="prioritized-experience-replay">Prioritized Experience Replay</h2>
+
+<p>The key idea is that an RL agent can learn more effectively from some transitions than from others.</p>
+
+<p>In particular, we propose to more frequently replay transitions with high expected learning progress, as measured by the magnitude of their temporal-difference (TD) error.</p>
+
+<p>TD error $\delta$, which indicates how ‘surprising’ or unexpected the transition is: speciﬁcally, how far the value is from its next-step bootstrap estimate.</p>
+
+<p>In particular, we propose to more frequently replay transitions with high expected learning progress, as measured by the magnitude of their temporal-difference (TD) error. This prioritization can lead to a loss of diversity, which we alleviate with stochastic prioritization, and introduce bias, which we correct with importance sampling. Our resulting algorithms are robust and scalable, which we demonstrate on the Atari 2600 benchmark suite, where we obtain faster learning and state-of-the-art performance.</p>
+
+<p>we use absolute TD error because it appears to be a reasonable approximation to the “usefulness” of sample</p>
+
+<p>a KL-based one in Rainbow DQN</p>
+
+<p>We can not keep a tally of all the magnitude of TD errors updated. DeepMind proposes a far more computationally efficient alternative of only updating the $\delta$ terms for items that are actually sampled during the minibatch gradient updates. Since we have to compute $\delta$ anyway to get the loss, we might as well use those to change the priorities.</p>
+
+<p>Next, given the absolute TD terms, how do we get a probability distribution for sampling? DeepMind proposes two ways of getting priorities, denoted as $p_i$:</p>
+
+<ul>
+  <li>indirect: A <em>rank</em> based method: $p_i = \frac 1 {rank(i)}$ where $rank(i)$ is the rank of transition $i$ when the replay memory is sorted according to $|\delta|$</li>
+  <li>direct: A <em>proportional</em> variant: $p_i = |\delta_i|+\epsilon$, where $\epsilon$ is a small constant ensuring that the sample has some non-zero probability of being drawn.</li>
+</ul>
+
+<p>PER initializes $p_i$ according to the maximum priority of any priority thus far, thus favoring those terms during sampling later.</p>
+
+<p>From either of these, we can easily get a probability distribution: $P(i) = \frac {p_i^\alpha} {\sum_k p_k^\alpha}$ The exponent $\alpha$ determines how much prioritization is used, with $\alpha = 0$ corresponding to the uniform case.</p>
+
+<p>Since the buffer size N can be quite large (e.g., one million), DeepMind uses special data structures to reduce the time complexity of certain operations. For the proportional-based variant, which is what OpenAI implements, a sum-tree data structure is used to make both updating and sampling O(logN) operations.</p>
+
+<p>The estimation of the expected value with stochastic updates relies on those updates corresponding to the same distribution as its expectation. Prioritized replay introduces bias because it changes this distribution in an uncontrolled fashion, and therefore changes the solution that the estimates will converge to (even if the policy and state distribution are fixed). We can correct this bias by using importance-sampling (IS) weights.</p>
+
+<p>How do we apply importance sampling? We use the following weights:</p>
+
+\[w_i = (\frac 1 N \cdot \frac 1 {P(i)})^\beta\]
+
+<p>The $\frac 1 N$ part is because of the current experience replay size.</p>
+
+<p>I think the distribution DeepMind is talking about (“same distribution as its expectation”) above is the distribution of samples that are obtained when sampling uniformly at random from the replay buffer.</p>
+
+<p><em>PER over-samples those with high priority</em>, so the importance sampling correction should <em>down-weight</em> the impact of the sampled term, which it does by scaling the gradient term so that the gradient has “less impact” on the parameters.</p>
+
+<p>the importance sampling in PER is to correct the over-sampling with respect to the uniform distribution.</p>
+
+<p>See more in https://danieltakeshi.github.io/2019/07/14/per/</p>
+
+<hr />
+
+<h2 id="rainbow">Rainbow</h2>
+
+<p>Rainbow =</p>
+
+<p>Double DQN + Prioritized experience replay + Dueling network architecture + Learning from multi-step bootstrap targets + Distributional Q-learning + Noisy DQN</p>
+
+
+  </div>
+
+
+  <div class="page-navigation">
+    
+      <a class="prev" href="/rl/2020/12/26/6pga.html">&larr; Policy Gradient Algorithms</a>
+    
+
+    
+  </div>
+
+  
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shuai&#39;s blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Shuai Liu</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/liushuai26"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">liushuai26</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>

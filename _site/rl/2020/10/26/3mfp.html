@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Model-Free Prediction | Shuai’s blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Model-Free Prediction" />
+<meta name="author" content="Shuai Liu" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Reinforcement Learning basic concepts" />
+<meta property="og:description" content="Reinforcement Learning basic concepts" />
+<link rel="canonical" href="http://localhost:4000/rl/2020/10/26/3mfp.html" />
+<meta property="og:url" content="http://localhost:4000/rl/2020/10/26/3mfp.html" />
+<meta property="og:site_name" content="Shuai’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-10-26T01:20:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Model-Free Prediction" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Shuai Liu"},"url":"http://localhost:4000/rl/2020/10/26/3mfp.html","headline":"Model-Free Prediction","dateModified":"2020-10-26T01:20:00+08:00","datePublished":"2020-10-26T01:20:00+08:00","description":"Reinforcement Learning basic concepts","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/rl/2020/10/26/3mfp.html"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Shuai's blog" /></head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Shuai&#39;s blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Model-Free Prediction</h1>
+    <p class="post-meta">
+
+      <time datetime="2020-10-26T01:20:00+08:00" itemprop="datePublished">
+        
+        Oct 26, 2020
+      </time>
+
+      <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        by <span itemprop="name">Shuai Liu</span>
+      </span>
+
+      <span>
+        
+      </span>
+      <!--
+      <span class="share-buttons">
+        <span class="share-button"><a class="twitter-share-button" href="https://twitter.com/share" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+
+        <span class="share-button"><span class="fb-like" data-href="/rl/2020/10/26/3mfp.html" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></span></span>
+      </span>
+      <div style="clear: both;"/>
+      -->
+
+    </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <blockquote>
+  <p>Reinforcement Learning basic concepts</p>
+</blockquote>
+
+<p>Estimate the value function of an unknown MDP.</p>
+
+<ul>
+  <li>Monte Carlo Prediction</li>
+  <li>Temporal-Difference (TD) Prediction</li>
+</ul>
+
+<hr />
+
+<p>Monte Carlo Methods</p>
+
+<p>Monte Carlo methods require only experience—sample sequences of states, actions, and rewards from actual or simulated interaction with an environment.</p>
+
+<ul>
+  <li>
+    <p>MC methods learn directly from episodes of experience</p>
+  </li>
+  <li>
+    <p>MC is model-free: no knowledge of MDP transitions / rewards</p>
+  </li>
+  <li>
+    <p>MC learns from complete episodes: no bootstrapping</p>
+  </li>
+  <li>
+    <p>MC uses the simplest possible idea: value = mean return</p>
+  </li>
+</ul>
+
+<p>Here we deﬁne Monte Carlo methods only for episodic tasks. That is, we assume experience is divided into episodes, and that all episodes eventually terminate no matter what actions are selected.</p>
+
+<p>TD methods</p>
+
+<ul>
+  <li>
+    <p>TD methods learn directly from episodes of experience</p>
+  </li>
+  <li>
+    <p>TD is model-free: no knowledge of MDP transitions / rewards</p>
+  </li>
+  <li>
+    <p>TD learns from incomplete episodes, by bootstrapping</p>
+  </li>
+  <li>
+    <p>TD updates a guess towards a guess</p>
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="monte-carlo-prediction">Monte Carlo Prediction</h3>
+
+<p>An obvious way to estimate it from experience, then, is simply to average the returns observed after visits to that state. As more returns are observed, the average should converge to the expected value.</p>
+
+<p>Goal: learn $v_\pi$ from episodes of experience under policy $\pi$</p>
+
+<p>return is the total discounted reward:</p>
+
+<p>$G_t = R_{t+1} + \gamma R_{t+2} + … + \gamma^{T-1}R_T$</p>
+
+<p>Each average is itself an unbiased estimate, and the standard deviation of its error falls as $1/\sqrt n$, where $n$ is the number of returns averaged. Whereas the DP diagram shows all possible transitions, the Monte Carlo diagram shows only those sampled on the one episode. Monte Carlo methods do not bootstrap. One can generate many sample episodes starting from the states of interest, averaging returns from only these states, ignoring all others.</p>
+
+<h3 id="td-prediction">TD Prediction</h3>
+
+<p>Firstly, recall the monte carlo method. Monte Carlo methods wait until the return following the visit is known, then use that return as a target for $V(S_t)$. A simple every-visit Monte Carlo method suitable for nonstationary environments is</p>
+
+\[V(S_t) \leftarrow V(S_t) + \alpha[G_t-V(S_t)]\]
+
+<p>Whereas Monte Carlo methods must wait until the end of the episode to determine the increment to $V(St)$ (only then is $G_t$ known), TD methods need to wait only until the next time step. At time $t + 1$ they immediately form a target and make a useful update using the observed reward $R_{t+1}$ and the estimate $V(S_{t+1})$. The simplest TD method makes the update:</p>
+
+\[V(S_t) \leftarrow V(S_t) + \alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]\]
+
+<p>The target for the TD update is <strong>$R_{t+1}+\gamma V(S_{t+1})$</strong></p>
+
+<p>Measuring the difference between <strong>the estimated value of $S_t$</strong> and <strong>the better estimate $R_{t+1}+\gamma V(S_{t+1})$</strong>. This quantity, called the $TD\ error$:</p>
+
+\[\delta_t\ \dot =\ R_{t+1} + \gamma V(S_{t+1})-V(S_t)\]
+
+<h4 id="mc-and-td">MC and TD</h4>
+
+<p>Goal: learn $v_\pi$ online from experience under policy $\pi$</p>
+
+<p>Incremental every-visit Monte-Carlo</p>
+
+<ul>
+  <li>
+    <p>update value $V(S_t)$ toward <em>actual</em> return $G_t$</p>
+
+\[V(S_t) \leftarrow V(S_t) + \alpha (G_t-V(S_t))\]
+  </li>
+</ul>
+
+<p>Simplest temporal-difference learning algorithm: TD(0)</p>
+
+<ul>
+  <li>
+    <p>Update value $V(S_t)$ toward <em>estimated</em> return $R_{t+1}+\gamma V(S_{t+1})$</p>
+
+\[V(S_t) \leftarrow V(S_t) + \alpha(R_{t+1}+\gamma V(S_{t+1})- V(S_t))\]
+  </li>
+</ul>
+
+<h4 id="advantages-and-disadvantages-of-mc-vs-td">Advantages and Disadvantages of MC vs. TD</h4>
+
+<p>TD can learn before knowing the final outcome</p>
+
+<ul>
+  <li>TD can learn online after every step</li>
+  <li>MC must wait until end of episode before return is known</li>
+</ul>
+
+<p>TD can learn without the final outcome</p>
+
+<ul>
+  <li>TD can learn from incomplete sequences</li>
+  <li>MC can only learn from complete sequences</li>
+  <li>TD works in continuing (non-terminating) environments</li>
+  <li>MC only works for episodic (terminating) environments</li>
+</ul>
+
+<p>TD methods have usually been found to converge faster than constant-$\alpha$ MC methods on stochastic tasks</p>
+
+<hr />
+
+<h2 id="model-free-control">Model-Free Control</h2>
+
+<p>Policy improvement.</p>
+
+<ul>
+  <li>Monte-Carlo Control</li>
+  <li>TD Control</li>
+</ul>
+
+<p>Model-Free Policy Iteration Using Action-Value Function.</p>
+
+<p>Greedy policy improvement over V(s) requires model of MDP</p>
+
+\[\pi'(s) = \underset{a \in A} {\arg\max} \cal R^a_s+\cal P^a_{ss'}V(s')\]
+
+<p>Policy improvement is done by making the policy greedy with respect to the current value function. In this case we have an action-value function, and therefore no model is needed to construct the greedy policy.</p>
+
+<p>Greedy policy improvement over $Q(s, a)$ is model-free</p>
+
+\[\pi'(s) = \underset {a \in A} {\arg \max} Q(s, a)\]
+
+<p>problem about greedy action selection: never exploration.</p>
+
+<h4 id="epsilon-greedy-exploration">$\epsilon$-Greedy Exploration</h4>
+
+<p>$\epsilon$-Greedy, Simplest idea for ensuring continual exploration. meaning that most of the time they choose an action that has maximal estimated action value, but with probability $\epsilon$ they instead select an action at random.</p>
+
+<h3 id="monte-carlo-control">Monte-Carlo Control</h3>
+
+<h3 id="td-control">TD Control</h3>
+
+<p>Temporal-difference (TD) learning has several advantages over Monte-Carlo (MC)</p>
+
+<ul>
+  <li>Lower variance</li>
+  <li>Online</li>
+  <li>Incomplete sequences</li>
+</ul>
+
+<p>Natural idea: use TD instead of MC in our control loop</p>
+
+<ul>
+  <li>Apply TD to Q(S,A)</li>
+  <li>Use $\epsilon$-greedy policy improvement</li>
+  <li><strong>Update every time-step</strong></li>
+</ul>
+
+<h3 id="sarsa-on-policy-td-control">Sarsa: On-policy TD Control</h3>
+
+\[Q(S, A) \leftarrow Q(S, A) + \alpha (R+\gamma Q(S', A')-Q(S,A))\]
+
+<p>This update is done after every transition from a nonterminal state St. If $S’$ is terminal, then $Q(S’, A’)$ is defined as zero.</p>
+
+<p>n-step Sarsa</p>
+
+<p>n = 1 (Sarsa)                 $q_t^{(1)} = R_{t+1} + \gamma Q(S_{t+1})$</p>
+
+<p>n = 2                              $q_t^{(2)} = R_{t+1} + \gamma R_{t+2} + \gamma^2 Q(S_{t+2})$</p>
+
+<p>…</p>
+
+<p>n = $\infty$ (MC)                   $q_t^{(\infty)} = R_{t+1} + \gamma R_{t+2} +\ …\ + \gamma^{T-1}R_T$</p>
+
+<p>n-step Q-return              $q_t^{(n)} = R_{t+1} + \gamma R_{t+2} +\ …\ + \gamma^{n-1}R_{t+n}+\gamma^nQ(S_{t+n})$</p>
+
+<p>n-step Sarsa updates Q(s,a) towards the n-step Q-return:</p>
+
+\[Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha(q_t^{(n)}-Q(S_t, A_t))\]
+
+<p>**Sarsa(λ) Algorithm: **</p>
+
+<h4 id="off-policy-learning">Off-Policy Learning</h4>
+
+<p>Evaluate target policy $\pi(a|s)$ to compute $v_\pi(s)$ or $q_\pi(s, a)$</p>
+
+<p>While following behavior policy $\mu(a|s)$</p>
+
+\[\{S_1,A_1,R_2,\ ...,S_T\}\sim \mu\]
+
+<p>Re-use experience generated from old policies $\pi_1, \pi_2, \ …, \pi_{t-1}$, Learn from observing humans or other agents.</p>
+
+<p>Learn about optimal policy while following exploratory policy</p>
+
+<p>Learn about multiple policies while following one policy</p>
+
+<h4 id="q-learning-off-policy-td-control">Q-Learning: Off-policy TD Control</h4>
+
+<p>consider oﬀ-policy learning of action-values $Q(s, a)$</p>
+
+<p>Next action is chosen using behavior policy $A_{t+1} \sim \mu(\cdot|S_t)$</p>
+
+<p>But we consider alternative successor action $A’ \sim \pi(\cdot|S_t)$</p>
+
+<p>And update $Q(S_t, A_t)$ towards value of alternative action</p>
+
+\[Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha(R_{t+1}+\gamma Q(S_{t+1}, A')-Q(S_t, A_t))\]
+
+<p>The target policy $\pi$ is greedy w.r.t $Q(s, a)$</p>
+
+\[\pi(S_{t+1}) = \underset {a'} {\arg\max} Q(S_{t+1}, a')\]
+
+<p>The behavior policy $\mu$ is e.g. $\epsilon$-greedy w.r.t $Q(s, a)$</p>
+
+\[\begin{align}
+&amp;\ \ \  \ \  R_{t+1} + \gamma Q(S_{t+1}, A') \\
+&amp; = R_{t+1} + \gamma Q(S_{t+1}, \underset {a'} {\arg\max}Q(S_{t+1}, a')) \\
+&amp; = R_{t+1} + \underset {a'} \max \gamma Q(S_{t+1}, a')
+\end{align}\]
+
+<p>Q-Learning Control Algorithm</p>
+
+\[Q(S, A) \leftarrow Q(S, A) + \alpha(R+\gamma \underset {a'} \max Q(S', a')-Q(S, A))\]
+
+  </div>
+
+
+  <div class="page-navigation">
+    
+      <a class="prev" href="/rl/2020/09/10/2dp.html">&larr; Dynamic Programming</a>
+    
+
+    
+      <a class="next" href="/rl/2020/11/24/4fa.html">Function Approximation &rarr;</a>
+    
+  </div>
+
+  
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shuai&#39;s blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Shuai Liu</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/liushuai26"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">liushuai26</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>

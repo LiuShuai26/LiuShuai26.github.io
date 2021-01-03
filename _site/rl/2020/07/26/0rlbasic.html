@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>RL basic conceptions and Finite Markov Decision Processes | Shuai’s blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="RL basic conceptions and Finite Markov Decision Processes" />
+<meta name="author" content="Shuai Liu" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Reinforcement Learning basic concepts" />
+<meta property="og:description" content="Reinforcement Learning basic concepts" />
+<link rel="canonical" href="http://localhost:4000/rl/2020/07/26/0rlbasic.html" />
+<meta property="og:url" content="http://localhost:4000/rl/2020/07/26/0rlbasic.html" />
+<meta property="og:site_name" content="Shuai’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-07-26T01:20:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="RL basic conceptions and Finite Markov Decision Processes" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Shuai Liu"},"url":"http://localhost:4000/rl/2020/07/26/0rlbasic.html","headline":"RL basic conceptions and Finite Markov Decision Processes","dateModified":"2020-07-26T01:20:00+08:00","datePublished":"2020-07-26T01:20:00+08:00","description":"Reinforcement Learning basic concepts","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/rl/2020/07/26/0rlbasic.html"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Shuai's blog" /></head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Shuai&#39;s blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">RL basic conceptions and Finite Markov Decision Processes</h1>
+    <p class="post-meta">
+
+      <time datetime="2020-07-26T01:20:00+08:00" itemprop="datePublished">
+        
+        Jul 26, 2020
+      </time>
+
+      <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        by <span itemprop="name">Shuai Liu</span>
+      </span>
+
+      <span>
+        
+      </span>
+      <!--
+      <span class="share-buttons">
+        <span class="share-button"><a class="twitter-share-button" href="https://twitter.com/share" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+
+        <span class="share-button"><span class="fb-like" data-href="/rl/2020/07/26/0rlbasic.html" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></span></span>
+      </span>
+      <div style="clear: both;"/>
+      -->
+
+    </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <blockquote>
+  <p>Reinforcement Learning basic concepts</p>
+</blockquote>
+
+<p>The main characters of RL are the <strong>agent</strong> and the <strong>environment</strong>. The environment is the world that the agent lives in and interacts with. At every step of interaction, the agent sees a (possibly partial) observation of the state of the world, and then decides on an action to take. The environment changes when the agent acts on it, but may also change on its own.</p>
+
+<p>The agent also perceives a <strong>reward</strong> signal from the environment, a number that tells it how good or bad the current world state is. The goal of the agent is to maximize its cumulative reward, called <strong>return</strong>. Reinforcement learning methods are ways that the agent can learn behaviors to achieve its goal.</p>
+
+<p>additional terminology:</p>
+
+<ul>
+  <li>states and observations,</li>
+  <li>action spaces,</li>
+  <li>policies,</li>
+  <li>trajectories,</li>
+  <li>different formulations of return,</li>
+  <li>the RL optimization problem,</li>
+  <li>and value functions.</li>
+</ul>
+
+<h3 id="states-and-observations">States and Observations</h3>
+
+<p>A <strong>state</strong> is a complete description of the state of the world. There is no information about the world which is hidden from the state. An <strong>observation</strong> is a partial description of a state, which may omit information.</p>
+
+<h3 id="action-spaces">Action Spaces</h3>
+
+<p>The set of all valid actions in a given environment is often called the <strong>action space</strong>. Some environments, like Atari and Go, have <strong>discrete action spaces</strong>, where only a finite number of moves are available to the agent. Other environments, like where the agent controls a robot in a physical world, have <strong>continuous action spaces</strong>. In continuous spaces, actions are real-valued vectors.</p>
+
+<h3 id="policies">Policies</h3>
+
+<p>A <strong>policy</strong> is the agent’s behavior. It is a map from state to action.</p>
+
+<p>A <strong>policy</strong> is a rule used by an agent to decide what actions to take.</p>
+
+<p>It can be deterministic, in which case it is usually denoted by $\mu$: $a_t = \mu(s_t)$ or it may be stochastic, in which case it is usually denoted by $\pi$: $a_t = \pi(\cdot|s_t)$ or $\pi(a|s) = \Bbb P[A_t=a|S_t=s]$</p>
+
+<h4 id="deterministic-policies">Deterministic Policies</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pi_net</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span><span class="p">(</span>
+              <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">obs_dim</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+              <span class="n">nn</span><span class="p">.</span><span class="n">Tanh</span><span class="p">(),</span>
+              <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+              <span class="n">nn</span><span class="p">.</span><span class="n">Tanh</span><span class="p">(),</span>
+              <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">act_dim</span><span class="p">)</span>
+            <span class="p">)</span>
+
+<span class="n">obs_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">actions</span> <span class="o">=</span> <span class="n">pi_net</span><span class="p">(</span><span class="n">obs_tensor</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="stochastic-policies">Stochastic Policies</h4>
+
+<p>The two most common kinds of stochastic policies in deep RL are <strong>categorical policies</strong> and <strong>diagonal Gaussian policies</strong>.</p>
+
+<p><strong>Categorical</strong> policies can be used in discrete action spaces, while diagonal <strong>Gaussian</strong> policies are used in continuous action spaces.</p>
+
+<p>A categorical policy is like a classifier over discrete actions. one final linear layer that gives you logits for each action, followed by a softmax to convert the logits into probabilities.</p>
+
+<p>Two key computations are centrally important for using and training stochastic policies:</p>
+
+<ul>
+  <li>sampling actions from the policy,</li>
+  <li>and computing log likelihoods of particular actions, $\log\pi_\theta(a|s)$.</li>
+</ul>
+
+<h3 id="trajectories">Trajectories</h3>
+
+<p>A trajectory $\tau$ is a sequence of states and actions in the world,</p>
+
+<p>Trajectories are also frequently called <strong>episodes</strong> or <strong>rollouts</strong>.</p>
+
+<h3 id="rewards">Rewards</h3>
+
+<ul>
+  <li>A <strong>reward</strong> $R_t$ is a scalar feedback signal</li>
+  <li>Indicates how well agent is doing at step $t$</li>
+  <li>The agent’s job is to maximize cumulative reward</li>
+</ul>
+
+<p>Reinforcement learning is based on the <strong>reward hypothesis</strong></p>
+
+<p><strong>Definition (Reward Hypothesis):</strong> <em>All</em> goals can be described by the maximization of expected cumulative reward.</p>
+
+<p>One kind of return is the <strong>finite-horizon undiscounted return</strong>.</p>
+
+<p>Another kind of return is the <strong>infinite-horizon discounted return</strong>, which is the sum of all rewards <em>ever</em> obtained by the agent, but discounted by how far off in the future they’re obtained.</p>
+
+<p>Why would we ever want a discount factor, though? Don’t we just want to get <em>all</em> rewards? We do, but the discount factor is both intuitively appealing and mathematically convenient. On an intuitive level: cash now is better than cash later. Mathematically: an infinite-horizon sum of rewards <a href="https://en.wikipedia.org/wiki/Convergent_series">may not converge</a> to a finite value, and is hard to deal with in equations. But with a discount factor and under reasonable conditions, the infinite sum converges.</p>
+
+<p>we frequently set up algorithms to optimize the undiscounted return, but use discount factors in estimating <strong>value functions</strong>.</p>
+
+<ol>
+  <li>We typically measure the “performance” of an RL algorithm by looking at the average episodic undiscounted sum of rewards, but we implement algorithms that use discount factors in value function learning, and increase probabilities of actions in proportion to advantage functions that use discount factors.</li>
+  <li>From the above, you might get the impression that we’re measuring undiscounted return, but optimizing discounted return. The truth is, we aren’t exactly optimizing for either! If we were truly optimizing for discounted return, there would be a discount factor included in the objective function for each state, corresponding to what timestep in a trajectory that state occurred. But, in typical implementations, we ignore that discount factor and weight each state’s contribution equally.</li>
+</ol>
+
+<hr />
+
+<h3 id="the-rl-problem">The RL Problem</h3>
+
+<p>Whatever the choice of return measure (whether infinite-horizon discounted, or finite-horizon undiscounted), and whatever the choice of policy, the goal in RL is to select a policy which maximizes <strong>expected return</strong> when the agent acts according to it.</p>
+
+<p>Let’s suppose that both the environment transitions and the policy are stochastic. In this case, the probability of a T-step trajectory is:
+\(P(\tau|\pi) = \rho_0(s_0)\prod_{t=0}^{T-1}P(s_{t+1}|s_t, a_t)\pi(a_t|s_t).\)
+The expected return (for whichever measure), denoted by $J(\pi)$, is then:
+\(J(\pi) = \int_\tau P(\tau|\pi)R(\tau) = E_{\tau \sim \pi}[R(\tau)]\)
+The central optimization problem in RL can then be expressed by
+\(\pi^* = \arg \max_\pi J(\pi),\)
+with $\pi^*$ being the <strong>optimal policy</strong></p>
+
+<hr />
+
+<p>An RL agent may include one or more of these components:</p>
+
+<ul>
+  <li>Policy: agent’s behavior function</li>
+  <li>Value function: how good is each state and/or action</li>
+  <li>Model: agent’s representation of the environment</li>
+</ul>
+
+<h3 id="value-functions">Value Functions</h3>
+
+<ul>
+  <li>
+    <p>Value function is a prediction of future reward</p>
+  </li>
+  <li>
+    <p>Used to evaluate the goodness/badness of states</p>
+  </li>
+  <li>
+    <p>And therefore to select between actions, e.g.
+\(V_\pi(s) = \Bbb E_\pi[R_{t+1} + \gamma R_{t+2} + \gamma^2R_{t+3} + ...|S_t=s]\)</p>
+  </li>
+</ul>
+
+<p>There are four main functions of note here.</p>
+
+<ol>
+  <li>The <strong>On-Policy Value Function</strong>, $V^\pi(s) = E_{\tau\sim\pi}[R(\tau)|s_0=s]$</li>
+  <li>The <strong>On-Policy Action-Value Function</strong>, $Q^\pi(s, a) = E_{\tau\sim\pi}[R(\tau)|s_0=s, a_0=a]$</li>
+  <li>The <strong>Optimal Value Function</strong>, $V^*(s) = \max_\pi E_{\tau\sim\pi}[R(\tau)|s_0=s]$</li>
+  <li>The <strong>Optimal Action-Value Function</strong>, $Q^*(s, a) = \max_\pi E_{\tau\sim\pi}[R(\tau)|s_0=s, a_0=a]$</li>
+</ol>
+
+<p>two key connections between the value function and the action-value function:
+\(V^\pi(s) = E_{a\sim\pi}[Q^\pi(s, a)], \\
+V^*(s) = \max_a Q^*(s, a).\)
+The optimal action:
+\(a^*(s) = \arg \max_aQ^*(s, a).\)</p>
+
+<p><strong>Model</strong></p>
+
+<ul>
+  <li>
+    <p>A <strong>model</strong> predicts what the environment will do next</p>
+  </li>
+  <li>
+    <p>$P$ predicts the next state</p>
+  </li>
+  <li>
+    <p>$R$ predicts the next (immediate) reward, e.g.
+\(P_{ss'}^a = \Bbb P[S_{t+1}=s'|S_t=s, A_t=a] \\
+R_s^a = \Bbb E[R_{t+1}|S_t=s, A_t = a]\)</p>
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="bellman-equations">Bellman Equations</h3>
+
+<p>The basic idea behind the Bellman equations is this:</p>
+
+<blockquote>
+  <p>The value of your starting point is the reward you expect to get from being there, plus the value of wherever you land next.</p>
+</blockquote>
+
+<p>The Bellman equations for the on-policy value functions are
+\(V^\pi(s) = \underset {s'\sim P} {\underset {a\sim\pi} E}[r(s, a)+\gamma V^\pi(s')], \\
+Q^\pi(s, a) = \underset {s'\sim P} E[r(s, a) + \gamma \underset {a'\sim\pi}E[Q^\pi(s', a')]]\)</p>
+
+<h3 id="advantage-functions">Advantage Functions</h3>
+
+<p>Sometimes in RL, we don’t need to describe how good an action is in an absolute sense, but only how much better it is than others on average. That is to say, we want to know the relative <strong>advantage</strong> of that action. We make this concept precise with the <strong>advantage function.</strong>
+\(A^\pi(s, a) = Q^\pi(s, a)-V^\pi(s).\)</p>
+
+<hr />
+
+<hr />
+
+<h2 id="formalism">Formalism</h2>
+
+<p>So far, we’ve discussed the agent’s environment in an informal way, but if you try to go digging through the literature, you’re likely to run into the standard mathematical formalism for this setting: <strong>Markov Decision Processes</strong> (MDPs). An MDP is a 5-tuple, $\langle S, A, R, P, \rho_0 \rangle$.</p>
+
+<p>The name Markov Decision Process refers to the fact that the system obeys the <a href="https://en.wikipedia.org/wiki/Markov_property">Markov property</a>: transitions only depend on the most recent state and action, and no prior history.</p>
+
+<h3 id="history-and-state">History and state</h3>
+
+<p>The <strong>history</strong> is the sequence of observations, actions, rewards
+\(H_t = O_1, R_1, A_1, ..., A_{t-1}, O_t, R_t\)
+<strong>State</strong> is the information used to determine what happens next.</p>
+
+<p>state is a function of the history:
+\(S_t = f(H_t)\)</p>
+
+<h3 id="information-state">Information State</h3>
+
+<p>An <strong>information state</strong> (a.k.a <strong>Markov state</strong>) contains all useful information from the history.</p>
+
+<p>A state $S_t$ is <strong>Markov</strong> if and only if
+\(\Bbb P[S_{t+1}|S_t] = \Bbb P[S_{t+1}|S_1, ..., S_t]\)</p>
+
+<ul>
+  <li>
+    <p>The future is independent of the past given the present
+\(H_{1:t} \rightarrow S_t \rightarrow H_{t+1:\infin}\)</p>
+  </li>
+  <li>
+    <p>Once the state is known, the history may be thrown away</p>
+  </li>
+  <li>
+    <p>i.e. The state is a sufficient statistic of the future</p>
+  </li>
+  <li>
+    <p>The environment state $S_t^e$ is Markov</p>
+  </li>
+  <li>
+    <p>The history $H_t$ is Markov</p>
+  </li>
+</ul>
+
+<hr />
+
+<p><em>Markov decision processes</em> formally describe an environment for reinforcement learning</p>
+
+<p>Where the environment is <em>fully observable</em></p>
+
+<p><strong>Full observability:</strong> agent directly observes environment state
+\(O_t = S_t^a = S_t^e\)</p>
+
+<ul>
+  <li>Agent state = environment state = information state</li>
+  <li>Formally, this is a <strong>Markov decision process</strong> (MDP)</li>
+</ul>
+
+<p><strong>Partial observability:</strong> agent indirectly observes environment.</p>
+
+<ul>
+  <li>Now agent state $\not=$ environment state</li>
+  <li>Formally this is a <strong>partially observable Markov decision process</strong> (POMDP)</li>
+</ul>
+
+<p>Definition <strong>$G_t$</strong></p>
+
+<p>The <em>return</em> $G_t$ is the total discounted reward from time-step $t$.
+\(G_t = R_{t+1} + \gamma R_{t+2} +\ ...=\underset {k=0} {\overset \infty \sum} \gamma^kR_{t+k+1}\)</p>
+
+<ul>
+  <li>The <em>discount</em> $\gamma \in [0, 1]$ is the present value of future rewards</li>
+  <li>The value of receiving reward R after k+1 time-steps is $\gamma^kR$</li>
+  <li>This values immediate reward above delayed reward.</li>
+  <li>$\gamma$ close to 0 leads to “myopic” evaluation</li>
+  <li>$\gamma$ close to 1 leads to “far-sighted” evaluation</li>
+</ul>
+
+<p>The value function $v(s)$ gives the long-term value of state $s$</p>
+
+<p>Definition <strong>state value function</strong></p>
+
+<p>The <em>state value function</em> v(s) of an MRP is the expected return starting from state $s$
+\(v(s) = \Bbb E[G_t|S_t=s]\)
+<strong>Bellman Equation for MRPs</strong></p>
+
+<p>The value function can be decomposed into two parts:</p>
+
+<ul>
+  <li>immediate reward $R_{t+1}$</li>
+  <li>discounted value of successor state $\gamma v(S_{t+1})$</li>
+</ul>
+
+\[v(s) = \Bbb E[G_t|S_t=s] = \Bbb E[R_{t+1}+\gamma v(S_{t+1})|S_t=s]\]
+
+<hr />
+
+<p><strong>Markov Decision Process</strong></p>
+
+<p>A Markov decision process (MDP) is a Markov reward process with decisions. It is an <em>environment</em> in which all states are Markov.</p>
+
+<p><strong>Definition</strong></p>
+
+<p>A <em>Markov Decision Process</em> is a tuple $&lt;S, A, P, R, \gamma&gt;$</p>
+
+<ul>
+  <li>
+    <p>$S$ is a finite set of states</p>
+  </li>
+  <li>
+    <p>A is a finite set of actions</p>
+  </li>
+  <li>
+    <p>P is a state transition probability matrix, $P_{ss’}^a=\Bbb P[S_{t+1}=s’|S_t=s, A_t=a]$</p>
+  </li>
+  <li>
+    <p>R is a reward function, $R_s^a = \Bbb E[R_{t+1}|S_t=s, A_t=a]$</p>
+  </li>
+  <li>
+    <p>$\gamma$ is a discount factor $\gamma \in [0, 1]$</p>
+  </li>
+</ul>
+
+<p><strong>Policies</strong> for MDP</p>
+
+<p><strong>Definition</strong></p>
+
+<p>A <em>policy</em> $\pi$ is a distribution over actions given states,
+\(\pi(a|s) = \Bbb P[A_t=a|S_t=s]\)</p>
+
+<ul>
+  <li>A policy fully defines the behavior of an agent</li>
+  <li>MDP policies depend on the current state (not the history)</li>
+</ul>
+
+<p><strong>Value Function</strong>  for MDP</p>
+
+<p><strong>Definition</strong></p>
+
+<p>The <em>state-value</em> function $v_\pi(s)$ of an MDP is the expected return starting from state s, and then following policy $\pi$
+\(v_\pi(s) = \Bbb E_\pi[G_t|S_t=s]\)
+The <em>action-value</em> function $q_\pi(s, a)$ is the expected return starting from state s, taking action a, and then following policy $\pi$
+\(q_\pi(s, a)=\Bbb E_\pi[G_t|S_t=s, A_t=a]\)</p>
+
+<hr />
+
+<p>Bellman Expectation Equation</p>
+
+<p>The state-value function can again be decomposed into immediate reward plus discounted value of successor state,
+\(v_\pi(s) = \Bbb E_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s]\)
+The action-value function can similarly be decomposed,
+\(q_\pi(s, a)=\Bbb E_\pi[R_{t+1}+\gamma q_\pi(S_{t+1}, A_{t+1})|S_t=s, A_t=a]\)</p>
+
+<hr />
+
+<h3 id="formula-derivation">Formula derivation:</h3>
+
+<p>Expected discounted return:
+\(\begin{align}
+G_t &amp; \dot= R_{t+1} + \gamma R_{t+2} + \gamma^2R_{t+3} + \gamma^3R_{t+4}+ \dots \\
+&amp; = R_{t+1} + \gamma (R_{t+2} + \gamma R_{t+3} + \gamma^2R_{t+4}+ \dots) \\
+&amp; = R_{t+1} + \gamma G_{t+1}
+\end{align}\)
+where $\gamma$ is a parameter, $0 \le \gamma \le 1$, called the discount rate.</p>
+
+<p>Bellman equation for $v_\pi$
+\(\begin{align}
+v_\pi(s) &amp;\dot=\Bbb E_\pi[G_t|S_t=s]\\
+&amp;= \Bbb E_\pi[R_{t+1}+\gamma G_{t+1}|S_t=s]\\
+&amp;= \underset a \sum\pi(a|s)\underset {s'} \sum\underset r \sum p(s', r|s,a)[r+\gamma \Bbb E_\pi[G_{t+1}|S_{t+1}=s']]\\
+&amp;=\underset a \sum \pi(a|s) \underset {s',r} \sum p(s', r|s,a)[r+\gamma v_\pi(s')],\ for\ all\ s \in \cal S
+\end{align}\)</p>
+
+<hr />
+
+<p>We denote all the <em>optimal policies</em> by $\pi_*$.</p>
+
+<p>$\pi \ge \pi’$ if and only if $v_\pi(s) \ge v_{\pi’}(s)$ for all $s \in \cal S$</p>
+
+<p><em>optimal state-value function</em></p>
+
+<p>$v_*(s) \dot= \underset \pi \max v_\pi(s)$, for all $s \in \cal S$</p>
+
+<p><em>optimal action-value function</em>, denoted $q_*$:</p>
+
+<p>$q_*(s, a) \dot=\underset \pi \max q_\pi(s, a)$, for all $s \in \cal S$ and $a \in \cal A(s)$.</p>
+
+<p>$q_*$ in terms of $v_*$:</p>
+
+\[q_*(s, a) = \Bbb E[R_{t+1} + \gamma v_*(S_{t+1}) | S_t=s, A_t=a]\]
+
+<hr />
+
+<p>Bellman optimality equation for $v_*$</p>
+
+\[\begin{align}
+v_\pi(s) &amp;= \underset {a \in \cal A(s)} \max q_{\pi_*}(s, a)\\
+&amp;= \underset a \max \Bbb E_{\pi_*}[G_t|S_t=s, A_t=a]\\
+&amp;= \underset a \max \Bbb E_\pi[R_{t+1}+\gamma G_{t+1}|S_t=s, A_t=a]\\
+&amp;= \underset a \max \Bbb E[R_{t+1} + \gamma v_*(S_{t+1}) | S_t=s, A_t=a] \\
+&amp;=\underset a \max\underset {s',r} \sum p(s', r|s,a)[r+\gamma v_\pi(s')]
+\end{align}\]
+
+<p>Bellman optimality equation for $q_*$</p>
+
+\[q_*(s, a) = \Bbb E[R_{t+1} + \gamma \underset {a'} \max q_*(S_{t+1}, a') | S_t=s, A_t=a]\\
+= \underset {s', r} \sum p(s', r|s, a)[r+ \gamma \underset {a'} \max q_*(s', a')].\]
+
+<p>Reference:</p>
+
+<p>Reinforcement Learning An Introduction</p>
+
+  </div>
+
+
+  <div class="page-navigation">
+    
+
+    
+      <a class="next" href="/rl/2020/08/26/1mab.html">Multi-armed Bandits: exploration and exploitation &rarr;</a>
+    
+  </div>
+
+  
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shuai&#39;s blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Shuai Liu</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/liushuai26"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">liushuai26</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>

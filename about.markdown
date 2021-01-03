@@ -4,9 +4,9 @@ title: About
 permalink: /about/
 ---
 
-This is Shuai !
+This is Shuai! I'm interesting on reinforcement learning. Here is some learning note for RL. Hope it will give you some help.
 
-I am interesting on Reinforcement learning. I'll post my learning note and tutorial here.
+This is my [Github](https://github.com/LiuShuai26).
 
-Keep on and Keeping on! 😊
+I also participate in [kaggle](https://www.kaggle.com/jserenity) competition.
 

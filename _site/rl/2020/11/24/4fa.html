@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Function Approximation | Shuai’s blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Function Approximation" />
+<meta name="author" content="Shuai Liu" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Reinforcement Learning basic concepts" />
+<meta property="og:description" content="Reinforcement Learning basic concepts" />
+<link rel="canonical" href="http://localhost:4000/rl/2020/11/24/4fa.html" />
+<meta property="og:url" content="http://localhost:4000/rl/2020/11/24/4fa.html" />
+<meta property="og:site_name" content="Shuai’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-11-24T01:20:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Function Approximation" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Shuai Liu"},"url":"http://localhost:4000/rl/2020/11/24/4fa.html","headline":"Function Approximation","dateModified":"2020-11-24T01:20:00+08:00","datePublished":"2020-11-24T01:20:00+08:00","description":"Reinforcement Learning basic concepts","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/rl/2020/11/24/4fa.html"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Shuai's blog" /></head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Shuai&#39;s blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Function Approximation</h1>
+    <p class="post-meta">
+
+      <time datetime="2020-11-24T01:20:00+08:00" itemprop="datePublished">
+        
+        Nov 24, 2020
+      </time>
+
+      <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        by <span itemprop="name">Shuai Liu</span>
+      </span>
+
+      <span>
+        
+      </span>
+      <!--
+      <span class="share-buttons">
+        <span class="share-button"><a class="twitter-share-button" href="https://twitter.com/share" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+
+        <span class="share-button"><span class="fb-like" data-href="/rl/2020/11/24/4fa.html" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></span></span>
+      </span>
+      <div style="clear: both;"/>
+      -->
+
+    </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <blockquote>
+  <p>Reinforcement Learning basic concepts</p>
+</blockquote>
+
+<p>Introduction</p>
+
+<ul>
+  <li>Large-Scale RL</li>
+  <li>Value Function Approximation</li>
+  <li>Which Function Approximator</li>
+</ul>
+
+<p>Incremental Methods</p>
+
+<ul>
+  <li>
+    <p>Gradient Descent</p>
+  </li>
+  <li>
+    <p>Value Function Approx. by SGD</p>
+  </li>
+  <li>
+    <p>Feature Vectors, Linear Value Function Approximation</p>
+
+    <p>Table lookup is a special case of linear value function approximation</p>
+  </li>
+  <li>
+    <p>Incremental Prediction Algorithms</p>
+  </li>
+  <li>
+    <p>MC, TD, TD(gamma), Control with Value Function Approximation</p>
+  </li>
+  <li>
+    <p>(Linear) Action-Value Function Approximation</p>
+  </li>
+  <li>
+    <p>Incremental Control Algorithms</p>
+  </li>
+  <li>
+    <p>Should we Bootstrap. MC performance is really bad</p>
+  </li>
+  <li>
+    <p>Algorithms Convergence</p>
+  </li>
+</ul>
+
+<p>Batch Methods</p>
+
+<p>Gradient descent is simple and appealing But it is not sample eﬃcient</p>
+
+<p>Batch methods seek to ﬁnd the best ﬁtting value function</p>
+
+<p>Given the agent’s experience (“training data”)                    off policy</p>
+
+<ul>
+  <li>Least Squares Prediction</li>
+  <li>SGD with Experience Replay</li>
+  <li>Experience Replay in DQN</li>
+  <li>Linear Least Squares Prediction</li>
+  <li>Least Squares Policy Iteration</li>
+  <li>Least Squares
+    <ul>
+      <li>Action-Value Function Approximation</li>
+      <li>Control</li>
+      <li>Q-Learning</li>
+      <li>Policy Iteration Algorithm</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="the-motivation-for-function-approximation-over-table-lookup">the motivation for Function Approximation over Table Lookup</h3>
+
+<p>So far we have represented value function by a lookup table. Every state s has an entry $V(s)$ or every state-action pair s,a has an entry $Q(s, a)$.</p>
+
+<p>Problem with large MDPs: There are too many states and/or actions to store in memory It is too slow to learn the value of each state individually.</p>
+
+<p><strong>Function approximation</strong> because it takes examples from a desired function (e.g., a value function) and attempts to generalize from them to construct an approximation of the entire function.</p>
+
+<p>Solution for large MDPs: Estimate value function with <strong>function approximation</strong></p>
+
+<p>function approximation</p>
+
+<p>$\hat{v}(s, w) \approx v_\pi(s) $ or $\hat{q}(s, a, w) \approx q_\pi(s, a)$</p>
+
+<p><em>the number of weights (the dimensionality of w) is much less than the number of states. Generalize from seen states to unseen states. Update parameter w using MC or TD learning.</em></p>
+
+<p>Which Function Approximator? We consider diﬀerentiable function approximators like Linear combinations of features and Neural network.</p>
+
+<p>Furthermore, we require a training method that is suitable for non-stationary, non-iid data.</p>
+
+<hr />
+
+<h3 id="incremental-methods">Incremental Methods</h3>
+
+<h4 id="value-function-approx-by-stochastic-gradient-descent">Value Function Approx. By Stochastic Gradient Descent</h4>
+
+<p>Goal: ﬁnd parameter vector <strong>w</strong> minimizing mean-squared error between approximate value fn $\hat{v}(s, w)$ and true value fn $v_\pi(s)$</p>
+
+\[J(w) = \Bbb E_\pi[(v_\pi(S)-\hat{v}(S, w))^2]\]
+
+<p>Gradient descent ﬁnds a local minimum</p>
+
+\[\begin{align}
+\Delta w &amp; = - \frac{1}{2}\alpha\nabla_wJ(w)\\
+&amp; =\alpha \Bbb E_\pi[(v_\pi(S)-\hat{v}(S,w))\nabla_\pi\hat{v}(S, w)]
+\end{align}\]
+
+<p>Stochastic gradient descent samples the gradient</p>
+
+\[\Delta w = \alpha(v_\pi(S)-\hat{v}(S, w))\nabla_\pi\hat{v}(S, w)\]
+
+<p><em>Expected update is equal to full gradient update.</em></p>
+
+<h4 id="incremental-prediction-algorithms">Incremental Prediction Algorithms</h4>
+
+<p>All of the prediction methods covered here have been described as updates to an estimated value function that shift its value at particular states toward a “backed-up value,” or update target, for that state.</p>
+
+<p>Have assumed true value function $v_\pi(s)$ given by supervisor But in RL there is no supervisor, only rewards In practice, we substitute a target for $v_\pi(s)$</p>
+
+<p>For MC, the target is the return $G_t$</p>
+
+\[\Delta w = \alpha (G_t - \hat{v}(S_t, w))\nabla_w\hat{v}(S_t, w)\]
+
+<p>Monte-Carlo evaluation converges to a local optimum Even when using non-linear value function approximation</p>
+
+<p>For TD(0), the target is the TD target $R_{t+1}+\gamma\hat{v}(S_{t+1}, w)$</p>
+
+\[\Delta w = \alpha (R_{t+1}+\gamma\hat{v}(S_{t+1}, w) - \hat{v}(S_t, w))\nabla_w\hat{v}(S_t, w)\]
+
+<p>Linear TD(0) converges (close) to global optimum</p>
+
+<p>For TD($\gamma$), the target  is the $\gamma$-return $G_t^\gamma$</p>
+
+\[\Delta w = \alpha (G_t^\gamma - \hat{v}(S_t, w))\nabla_w\hat{v}(S_t, w)\]
+
+<p>TD does not follow the gradient of any objective function. This is why TD can diverge when oﬀ-policy or using non-linear function approximation Gradient TD follows true gradient of projected Bellman error.</p>
+
+<p><em>Reinforcement learning with function approximation involves a number of new issues that do not normally arise in conventional supervised learning, such as nonstationary, bootstrapping, and delayed targets.</em></p>
+
+<h3 id="linear-methods">Linear Methods</h3>
+
+<p>Linear methods approximate the state-value function by the inner product between w and x(s):</p>
+
+\[\hat{v}(s, w) \dot= w^Tx(s) \dot=\overset d {\underset {i=1} \sum} w_ix_i(s)\]
+
+<hr />
+
+<h3 id="batch-methods">Batch Methods</h3>
+
+<p>Gradient descent is simple and appealing But it is not sample eﬃcient.</p>
+
+<p>Batch methods seek to ﬁnd the best ﬁtting value function, given the agent’s experience (“training data”) off policy</p>
+
+<h4 id="least-squares-prediction">Least squares Prediction</h4>
+
+<p>Least squares algorithms ﬁnd parameter vector w minimizing sum-squared error between $\hat{v}(s_t, w)$ and target values $v^\pi_t$</p>
+
+\[LS(w) = \overset T {\underset {t=1} \sum}(v^\pi_t-\hat{v}(s_t, w))^2 \\
+= \Bbb E_D[(v^\pi-\hat{v}(s, w))^2]\]
+
+<p>Given experience consisting of &lt;state,value&gt; pairs , $&lt;s_1, v_1^\pi&gt;$</p>
+
+<p>Repeat:</p>
+
+<ol>
+  <li>
+    <p>Sample state, value from experience $&lt;s, v^\pi&gt;$</p>
+  </li>
+  <li>
+    <p>Apply stochastic gradient descent update</p>
+
+\[\Delta w = \alpha (v^\pi-\hat{v}(s, w))\nabla_w\hat{v}(s, w)\]
+  </li>
+</ol>
+
+<p>Converges to least squares solution</p>
+
+\[w^\pi = \underset w {\arg\min}\ LS(w)\]
+
+<p>batching using experience replay: Store experience as dataset, randomize it, and repeatedly apply minibatch SGD.</p>
+
+<p>Tricks to stabilize non-linear function approximators: Fixed Targets. The target is calculated based on frozen parameter values from a previous time step.</p>
+
+<p>DQN uses experience replay and ﬁxed Q-targets.</p>
+
+<hr />
+
+
+  </div>
+
+
+  <div class="page-navigation">
+    
+      <a class="prev" href="/rl/2020/10/26/3mfp.html">&larr; Model-Free Prediction</a>
+    
+
+    
+      <a class="next" href="/rl/2020/12/26/5pg.html">Policy Gradient Method &rarr;</a>
+    
+  </div>
+
+  
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shuai&#39;s blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Shuai Liu</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/liushuai26"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">liushuai26</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
