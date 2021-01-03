@@ -8,5 +8,7 @@ This is Shuai! I'm interesting on reinforcement learning. Here is some learning 
 
 This is my [Github](https://github.com/LiuShuai26).
 
+I wrote a Distributed DRL framework [Distributed-RL](https://github.com/LiuShuai26/Distributed-RL) by Ray and TensorFlow with Tutorial on Github.
+
 I also participate in [kaggle](https://www.kaggle.com/jserenity) competition.
 
